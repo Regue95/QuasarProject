@@ -1,0 +1,23 @@
+# Docker Compose file Reference (https://docs.docker.com/compose/compose-file/)
+
+version: '2.2'
+
+# Define services
+services:
+
+  # App Service
+  web:
+    network_mode: "host"
+    # Configuration for building the docker image for the service
+    build:
+      context: . # Use an image built from the specified dockerfile in the current directory.
+      dockerfile: Dockerfile
+    restart: always
+    #depends_on:
+      #- elasticsearch
+        #condition: service_healthy  
+  
+
+volumes:
+  esdata64:
+    driver: local
