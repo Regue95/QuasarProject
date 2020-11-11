@@ -1,9 +1,12 @@
 package main
 
 import (
+	"os"
 	"quasarproject/controllers"
 	"quasarproject/http"
 	"quasarproject/services"
+
+	"github.com/joho/godotenv"
 )
 
 var (
@@ -15,7 +18,8 @@ var (
 )
 
 func main() {
+	_ = godotenv.Load()
 	httpRouter.GET("/ping", projectControllers.CheckPingHandler)
 	httpRouter.POST("/topsecret/", projectControllers.ParseMessageHandler)
-	httpRouter.SERVE("9200")
+	httpRouter.SERVE(os.Getenv("DB_PORT"))
 }

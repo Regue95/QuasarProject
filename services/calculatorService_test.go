@@ -7,10 +7,10 @@ import (
 // TestGetLocation tests GetLocation method
 func TestGetLocation(t *testing.T) {
 
-	data := []float32{722, 300, 410}
+	data := []float32{627, 208, 450}
 
-	var expectedX float32 = 100
-	var expectedY float32 = 204
+	var expectedX float32 = 49
+	var expectedY float32 = 103
 
 	calculatorService := NewCalculatorService()
 	x, y := calculatorService.GetLocation(data...)

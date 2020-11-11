@@ -20,7 +20,7 @@ func TestObtainParameters(t *testing.T) {
 		"satelites": [
 			{
 				"name": "kenobi",
-				"distance": 722,
+				"distance": 627,
 				"message": [
 					" ",
 					"es",
@@ -31,7 +31,7 @@ func TestObtainParameters(t *testing.T) {
 			},
 			{
 				"name": "skywalker",
-				"distance": 300,
+				"distance": 208,
 				"message": [
 					"este",
 					"",
@@ -42,7 +42,7 @@ func TestObtainParameters(t *testing.T) {
 			},
 			{
 				"name": "sato",
-				"distance": 410,
+				"distance": 450,
 				"message": [
 					"",
 					"",
@@ -61,9 +61,9 @@ func TestObtainParameters(t *testing.T) {
 	result, _ := paramsService.ObtainParameters(ctxTest)
 
 	distances := make(map[string]float32)
-	distances["kenobi"] = 722
-	distances["skywalker"] = 300
-	distances["sato"] = 410
+	distances["kenobi"] = 627
+	distances["skywalker"] = 208
+	distances["sato"] = 450
 
 	messages := [][]string{
 		{" ", "es", "", " ", ""},
@@ -90,7 +90,7 @@ func TestObtainParametersWrongQuantity(t *testing.T) {
 		"satelites": [
 			{
 				"name": "kenobi",
-				"distance": 722,
+				"distance": 627,
 				"message": [
 					" ",
 					" ",
@@ -101,7 +101,7 @@ func TestObtainParametersWrongQuantity(t *testing.T) {
 			},
 			{
 				"name": "skywalker",
-				"distance": 300,
+				"distance": 208,
 				"message": [
 					"este",
 					"",
