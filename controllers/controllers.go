@@ -7,35 +7,43 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ProjectControllersInterface is an interface
-type ProjectControllersInterface interface {
-	ControllerInterface
-}
-
 // ControllerInterface is an interface
 type ControllerInterface interface {
 	CheckPingHandler(g *gin.Context)
 	ParseMessageHandler(g *gin.Context)
+	PingDBHandler(g *gin.Context)
 }
 
 // NewControllers implement services
 func NewControllers(
 	paramsService services.ParametersServiceInterface,
 	tsService services.TopSecretServiceInterface,
-) ProjectControllersInterface {
+	statService services.StatusServiceInterface,
+) ControllerInterface {
 	return &controllers{
 		parametersService: paramsService,
 		topSecretService:  tsService,
+		statusService:     statService,
 	}
 }
 
 type controllers struct {
 	parametersService services.ParametersServiceInterface
 	topSecretService  services.TopSecretServiceInterface
+	statusService     services.StatusServiceInterface
 }
 
 func (c controllers) CheckPingHandler(g *gin.Context) {
-	g.JSON(http.StatusOK, nil)
+	response, err := c.statusService.GetPing()
+	if err != nil {
+		g.AbortWithStatusJSON(http.StatusNotFound, nil)
+		panic(err)
+	}
+	g.JSON(http.StatusOK, response)
+}
+
+func (c controllers) PingDBHandler(g *gin.Context) {
+	g.JSON(http.StatusOK, c.statusService.PingDB())
 }
 
 func (c controllers) ParseMessageHandler(g *gin.Context) {
