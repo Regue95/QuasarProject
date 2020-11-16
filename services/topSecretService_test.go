@@ -7,9 +7,6 @@ import (
 	"testing"
 )
 
-type calculationServiceMock struct {
-}
-
 // TestParseMessage tests ParseMessage mehotd
 func TestParseMessage(t *testing.T) {
 

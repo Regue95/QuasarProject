@@ -2,7 +2,6 @@ package services
 
 import (
 	"encoding/json"
-	"log"
 	"quasarproject/entities"
 	"quasarproject/repositories"
 )
@@ -10,7 +9,7 @@ import (
 // TopSecretServiceSplitInterface is an interface
 type TopSecretServiceSplitInterface interface {
 	ObtainSateliteInfo() (entities.ParseMessage, error)
-	SaveSatelite(data entities.Satelites) error
+	SaveSateliteInfo(data entities.Satelites) error
 }
 
 type topSecretServiceSplit struct {
@@ -28,8 +27,8 @@ func NewTopSecretServiceSplit(calculatorService CalculatorServiceInterface, repo
 
 func (ss topSecretServiceSplit) ObtainSateliteInfo() (entities.ParseMessage, error) {
 	var parseMessage entities.ParseMessage
-	var satelitesInfo entities.Satelite
 	var messages [][]string
+	aux := make(map[string]entities.SplitMessageData)
 	distances := make(map[string]float32)
 
 	sateliteInfo, err := ss.repository.Get("satelite")
@@ -38,29 +37,70 @@ func (ss topSecretServiceSplit) ObtainSateliteInfo() (entities.ParseMessage, err
 		return parseMessage, err
 	}
 
-	_ = json.Unmarshal([]byte(sateliteInfo), &satelitesInfo)
+	_ = json.Unmarshal([]byte(sateliteInfo), &aux)
 
-	for _, info := range satelitesInfo.Satelites {
-		distances[info.Name] = info.Distance
-		messages = append(messages, info.Message)
+	for k, v := range aux {
+		distances[k] = v.Distance
+		messages = append(messages, v.Message)
+
 	}
-
 	parseMessage.Distances = distances
 	parseMessage.Messages = messages
 
 	return parseMessage, nil
 }
 
-func (ss topSecretServiceSplit) SaveSatelite(info entities.Satelites) error {
-	var satelitesInfo entities.Satelite
+func (ss topSecretServiceSplit) SaveSateliteInfo(info entities.Satelites) error {
+	aux := make(map[string]entities.SplitMessageData)
 
-	setSatelite, _ := json.Marshal(satelitesInfo)
+	getResponse, _ := ss.repository.Get("satelite")
 
-	err := ss.repository.Set("satelite", string(setSatelite))
+	if getResponse == "" {
+		ss.saveSatelite(info)
+	}
 
-	if err != nil {
-		log.Print("Error al guardar satelite. Error: ", err.Error())
-		return err
+	_ = json.Unmarshal([]byte(getResponse), &aux)
+
+	_, ok := aux[info.Name]
+
+	if ok {
+		return nil
+	}
+
+	data := entities.SplitMessageData{
+		Message:  info.Message,
+		Distance: info.Distance,
+	}
+
+	aux[info.Name] = data
+
+	add, _ := json.Marshal(aux)
+
+	setErr := ss.repository.Set("satelite", string(add))
+
+	if setErr != nil {
+		return setErr
+	}
+
+	return nil
+}
+
+func (ss topSecretServiceSplit) saveSatelite(info entities.Satelites) error {
+	sateliteInf := make(map[string]entities.SplitMessageData)
+
+	data := entities.SplitMessageData{
+		Message:  info.Message,
+		Distance: info.Distance,
+	}
+
+	sateliteInf[info.Name] = data
+
+	addSat, _ := json.Marshal(sateliteInf)
+
+	setErr := ss.repository.Set("satelite", string(addSat))
+
+	if setErr != nil {
+		return setErr
 	}
 
 	return nil

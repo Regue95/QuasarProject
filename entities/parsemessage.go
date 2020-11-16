@@ -11,3 +11,8 @@ type SateliteDistance struct {
 	Name     string
 	Distance float32
 }
+
+type SplitMessageData struct {
+	Message  []string
+	Distance float32
+}

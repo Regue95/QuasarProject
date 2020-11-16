@@ -125,3 +125,72 @@ func TestObtainParametersWrongQuantity(t *testing.T) {
 		t.Fatal(err.Error(), " es distinto a: ", expected)
 	}
 }
+
+func TestObtainSpliParameters(t *testing.T) {
+
+	ctxTest, _ := gin.CreateTestContext(httptest.NewRecorder())
+
+	body := `{
+		"satelites": [
+			{
+				"name": "kenobi",
+				"distance": 627,
+				"message": [
+					" ",
+					"es",
+					"",
+					" ",
+					""
+				]
+			},
+			{
+				"name": "skywalker",
+				"distance": 208,
+				"message": [
+					"este",
+					"",
+					"un",
+					"",
+					"secreto"
+				]
+			},
+			{
+				"name": "sato",
+				"distance": 450,
+				"message": [
+					"",
+					"",
+					"",
+					"mensaje",
+					""
+				]
+			}
+		]
+	}`
+
+	ctxTest.Request, _ = http.NewRequest(http.MethodPost, "/", bytes.NewBuffer([]byte(body)))
+
+	paramsService := NewGinParamsService()
+
+	result, _ := paramsService.ObtainSplitParameters(ctxTest)
+
+	distances := make(map[string]float32)
+	distances["kenobi"] = 627
+	distances["skywalker"] = 208
+	distances["sato"] = 450
+
+	messages := [][]string{
+		{" ", "es", "", " ", ""},
+		{"este", "", "un", "", "secreto"},
+		{"", "", "", "mensaje", ""},
+	}
+
+	expected := entities.ParseMessage{
+		Distances: distances,
+		Messages:  messages,
+	}
+
+	if reflect.DeepEqual(result, expected) {
+		t.Fatal(result, " es distinto a: ", expected)
+	}
+}

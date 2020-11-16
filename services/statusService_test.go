@@ -1,8 +1,10 @@
-package repositories
+package services
 
 import (
 	"log"
 	"quasarproject/database"
+	"quasarproject/repositories"
+	"quasarproject/responses"
 	"testing"
 
 	"github.com/alicebob/miniredis"
@@ -38,32 +40,32 @@ func (c clientMock) Client() database.RedisClientInterface {
 	return redis
 }
 
-func TestRedisPing(t *testing.T) {
+func TestGetPing(t *testing.T) {
 	dataBaseClient := NewClientMock()
-	repo := NewRepository(dataBaseClient)
-	result := repo.Ping()
 
-	if result != nil {
-		log.Fatal("Error TestRedisPing")
-	}
-}
-func TestRedisGet(t *testing.T) {
-	dataBaseClient := NewClientMock()
-	repo := NewRepository(dataBaseClient)
-	result, _ := repo.Get("satelite")
-	expected := ""
+	repo := repositories.NewRepository(dataBaseClient)
+
+	statService := NewStatusService(repo)
+
+	result, _ := statService.GetPing()
+
+	expected := responses.Status{Status: "OK"}
 
 	if result != expected {
 		log.Fatal(result, " es distinto a: ", expected)
 	}
 }
 
-func TestRedisSet(t *testing.T) {
+func TestGetPingDB(t *testing.T) {
 	dataBaseClient := NewClientMock()
-	repo := NewRepository(dataBaseClient)
-	result := repo.Set("satelite", "satelite")
+
+	repo := repositories.NewRepository(dataBaseClient)
+
+	statService := NewStatusService(repo)
+
+	result := statService.PingDB()
 
 	if result != nil {
-		log.Fatal("Error TestRedisSet")
+		log.Fatal("Error TestGetPingDB")
 	}
 }

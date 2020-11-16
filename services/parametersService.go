@@ -17,6 +17,7 @@ const (
 // ParametersServiceInterface is an interface
 type ParametersServiceInterface interface {
 	ObtainParameters(parameters interface{}) (entities.ParseMessage, error)
+	ObtainSplitParameters(parameters interface{}) (entities.Satelites, error)
 }
 
 type gParamsService struct {
@@ -51,4 +52,17 @@ func (g *gParamsService) ObtainParameters(info interface{}) (entities.ParseMessa
 	}
 
 	return parseMessage, nil
+}
+
+func (g *gParamsService) ObtainSplitParameters(info interface{}) (entities.Satelites, error) {
+	var satelite entities.Satelites
+
+	context := info.(*gin.Context)
+
+	if err := context.ShouldBindJSON(&satelite); err != nil {
+		return entities.Satelites{}, err
+	}
+
+	return satelite, nil
+
 }
