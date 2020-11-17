@@ -11,7 +11,7 @@ _Esta API tiene como objetivo, triangular la posición y obtener el mensaje emit
 _Docker_
 
 ```
-docker-compose up --build
+docker-compose up -d --build
 ```
 
 * HOST=134.209.73.178
