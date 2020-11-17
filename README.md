@@ -27,4 +27,4 @@ redis-cli
 * DB_PORT=6379
 
 ## Autor ✒️
-· Juan Ignacio Regueira
+* Juan Ignacio Regueira
